@@ -1092,8 +1092,19 @@ class BudgetApp {
     try {
       const { data, error } = await this.supabase.auth.signUp({ email, password });
       if (error) throw error;
-      this.closeAuthModal();
-      this.showToast(this.t("toast_signup_success"));
+
+      // Auto login immediately after signup
+      const loginRes = await this.supabase.auth.signInWithPassword({ email, password });
+      if (loginRes.data && loginRes.data.user) {
+        this.currentUser = loginRes.data.user;
+        this.updateAuthUI();
+        this.closeAuthModal();
+        this.showToast(this.t("toast_login_success"));
+        await this.fetchCloudData();
+      } else {
+        this.closeAuthModal();
+        this.showToast(this.t("toast_signup_success"));
+      }
     } catch (err) {
       this.showToast(this.t("toast_auth_error", { error: err.message }));
     }

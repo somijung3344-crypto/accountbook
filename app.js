@@ -391,7 +391,9 @@ class BudgetApp {
     if (this.elAuthBtn) {
       this.elAuthBtn.addEventListener("click", () => {
         if (this.currentUser) {
-          this.handleLogout();
+          if (confirm(this.currentLang === "ko" ? "로그아웃 하시겠습니까?" : "Do you want to log out?")) {
+            this.handleLogout();
+          }
         } else {
           this.openAuthModal();
         }
@@ -406,7 +408,9 @@ class BudgetApp {
     if (this.elNavAuthMobile) {
       this.elNavAuthMobile.addEventListener("click", () => {
         if (this.currentUser) {
-          this.handleLogout();
+          if (confirm(this.currentLang === "ko" ? "로그아웃 하시겠습니까?" : "Do you want to log out?")) {
+            this.handleLogout();
+          }
         } else {
           this.openAuthModal();
         }
@@ -419,11 +423,9 @@ class BudgetApp {
     // Direct button click handlers
     if (this.elLoginSubmitBtn) {
       this.elLoginSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleLogin(); });
-      this.elLoginSubmitBtn.addEventListener("touchend", (e) => { e.preventDefault(); this.handleLogin(); });
     }
     if (this.elSignupSubmitBtn) {
       this.elSignupSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleSignup(); });
-      this.elSignupSubmitBtn.addEventListener("touchend", (e) => { e.preventDefault(); this.handleSignup(); });
     }
 
     // Enter key submit for login/signup inputs

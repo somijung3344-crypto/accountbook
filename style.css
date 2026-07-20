@@ -692,13 +692,15 @@ a {
   justify-content: center;
   z-index: 1300;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
   padding: 16px;
 }
 
 .modal-overlay.active {
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
 }
 
@@ -842,6 +844,8 @@ a {
   border: none;
   cursor: pointer;
   padding: 4px 12px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .nav-item.active {

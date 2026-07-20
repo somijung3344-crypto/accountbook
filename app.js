@@ -427,6 +427,22 @@ class BudgetApp {
       });
     }
 
+    // Mobile fallback: explicit click on submit buttons
+    const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+    if (loginBtn) {
+      loginBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
+    }
+    const signupBtn = document.querySelector('#signupForm button[type="submit"]');
+    if (signupBtn) {
+      signupBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        this.handleSignup();
+      });
+    }
+
     // Edit Initial Balance Button
     if (this.elEditInitialBalanceBtn) {
       this.elEditInitialBalanceBtn.addEventListener("click", () => this.openInitialModal());
@@ -1085,10 +1101,10 @@ class BudgetApp {
 
     if (tab === "login") {
       if (this.elTabLoginBtn) this.elTabLoginBtn.classList.add("active");
-      if (this.elLoginForm) this.elLoginForm.style.display = "block";
+      if (this.elLoginForm) this.elLoginForm.style.display = "flex";
     } else if (tab === "signup") {
       if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
-      if (this.elSignupForm) this.elSignupForm.style.display = "block";
+      if (this.elSignupForm) this.elSignupForm.style.display = "flex";
     }
   }
 

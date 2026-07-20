@@ -1157,6 +1157,11 @@ a {
   .modal-overlay {
     padding: 0;
     align-items: flex-end;
+    z-index: 9999 !important;
+  }
+
+  .modal-overlay.active {
+    pointer-events: auto;
   }
 
   .modal-card {
@@ -1165,11 +1170,17 @@ a {
     border-bottom-right-radius: 0;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    max-height: 85vh;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom, 20px);
   }
 
   .modal-header {
     padding: 14px 18px;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 1;
   }
 
   .modal-body {
@@ -1178,7 +1189,10 @@ a {
   }
 
   .modal-footer {
-    padding: 12px 18px;
+    padding: 12px 18px 24px;
+    position: sticky;
+    bottom: 0;
+    background: var(--surface);
   }
 }
 

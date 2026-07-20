@@ -416,15 +416,48 @@ class BudgetApp {
     if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
     if (this.elTabSignupBtn) this.elTabSignupBtn.addEventListener("click", () => this.switchAuthTab("signup"));
 
-    // Direct button click handlers — no form submit needed
+    // Direct button click handlers
     if (this.elLoginSubmitBtn) {
-      this.elLoginSubmitBtn.addEventListener("click", () => this.handleLogin());
+      this.elLoginSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleLogin(); });
       this.elLoginSubmitBtn.addEventListener("touchend", (e) => { e.preventDefault(); this.handleLogin(); });
     }
     if (this.elSignupSubmitBtn) {
-      this.elSignupSubmitBtn.addEventListener("click", () => this.handleSignup());
+      this.elSignupSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleSignup(); });
       this.elSignupSubmitBtn.addEventListener("touchend", (e) => { e.preventDefault(); this.handleSignup(); });
     }
+
+    // Enter key submit for login/signup inputs
+    [this.elLoginEmailInput, this.elLoginPasswordInput].forEach(input => {
+      if (input) {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            this.handleLogin();
+          }
+        });
+      }
+    });
+    [this.elSignupEmailInput, this.elSignupPasswordInput].forEach(input => {
+      if (input) {
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            this.handleSignup();
+          }
+        });
+      }
+    });
+
+    // Close modals on backdrop click
+    [this.elTxModal, this.elInitialBalanceModal, this.elAuthModal].forEach(modal => {
+      if (modal) {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            modal.classList.remove("active");
+          }
+        });
+      }
+    });
 
     // Edit Initial Balance Button
     if (this.elEditInitialBalanceBtn) {
@@ -447,73 +480,88 @@ class BudgetApp {
     }
 
     // Language Toggle
-    this.elLangToggleBtn.addEventListener("click", () => {
-      this.currentLang = this.currentLang === "ko" ? "en" : "ko";
-      localStorage.setItem("budget_ledger_lang", this.currentLang);
-      this.updateLanguageUI();
-      this.render();
-    });
+    if (this.elLangToggleBtn) {
+      this.elLangToggleBtn.addEventListener("click", () => {
+        this.currentLang = this.currentLang === "ko" ? "en" : "ko";
+        localStorage.setItem("budget_ledger_lang", this.currentLang);
+        this.updateLanguageUI();
+        this.render();
+      });
+    }
 
     // Month Navigation
-    this.elPrevMonthBtn.addEventListener("click", () => this.changeMonth(-1));
-    this.elNextMonthBtn.addEventListener("click", () => this.changeMonth(1));
+    if (this.elPrevMonthBtn) this.elPrevMonthBtn.addEventListener("click", () => this.changeMonth(-1));
+    if (this.elNextMonthBtn) this.elNextMonthBtn.addEventListener("click", () => this.changeMonth(1));
 
     // Filters
-    this.elSearchInput.addEventListener("input", (e) => {
-      this.searchQuery = e.target.value.toLowerCase();
-      this.renderTxList();
-    });
+    if (this.elSearchInput) {
+      this.elSearchInput.addEventListener("input", (e) => {
+        this.searchQuery = e.target.value.toLowerCase();
+        this.renderTxList();
+      });
+    }
 
-    this.elTypeFilter.addEventListener("change", (e) => {
-      this.typeFilter = e.target.value;
-      this.renderTxList();
-    });
+    if (this.elTypeFilter) {
+      this.elTypeFilter.addEventListener("change", (e) => {
+        this.typeFilter = e.target.value;
+        this.renderTxList();
+      });
+    }
 
-    this.elChannelFilter.addEventListener("change", (e) => {
-      this.channelFilter = e.target.value;
-      this.renderTxList();
-    });
+    if (this.elChannelFilter) {
+      this.elChannelFilter.addEventListener("change", (e) => {
+        this.channelFilter = e.target.value;
+        this.renderTxList();
+      });
+    }
 
     // Add buttons
-    this.elAddTxBtnDesktop.addEventListener("click", () => this.openModal());
-    this.elFabBtn.addEventListener("click", () => this.openModal());
+    if (this.elAddTxBtnDesktop) this.elAddTxBtnDesktop.addEventListener("click", () => this.openModal());
+    if (this.elFabBtn) this.elFabBtn.addEventListener("click", () => this.openModal());
 
     // Modal Events
-    this.elCloseModalBtn.addEventListener("click", () => this.closeModal());
-    this.elCancelModalBtn.addEventListener("click", () => this.closeModal());
+    if (this.elCloseModalBtn) this.elCloseModalBtn.addEventListener("click", () => this.closeModal());
+    if (this.elCancelModalBtn) this.elCancelModalBtn.addEventListener("click", () => this.closeModal());
 
-    this.elTypeExpenseBtn.addEventListener("click", () => this.setModalType("expense"));
-    this.elTypeIncomeBtn.addEventListener("click", () => this.setModalType("income"));
+    if (this.elTypeExpenseBtn) this.elTypeExpenseBtn.addEventListener("click", () => this.setModalType("expense"));
+    if (this.elTypeIncomeBtn) this.elTypeIncomeBtn.addEventListener("click", () => this.setModalType("income"));
 
-    this.elTxForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      this.handleFormSubmit();
-    });
+    if (this.elTxForm) {
+      this.elTxForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleFormSubmit();
+      });
+    }
 
     // Mobile Navigation buttons
-    this.elNavHome.addEventListener("click", () => {
-      this.setActiveNav(this.elNavHome);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-    this.elNavAnalytics.addEventListener("click", () => {
-      this.setActiveNav(this.elNavAnalytics);
-      document.querySelector(".analytics-section").scrollIntoView({ behavior: "smooth" });
-    });
-    this.elNavAdd.addEventListener("click", () => {
-      this.setActiveNav(this.elNavAdd);
-      this.openModal();
-    });
-    this.elNavSettings.addEventListener("click", () => {
-      this.setActiveNav(this.elNavSettings);
-      this.showToast(this.t("toast_settings_info"));
-    });
+    if (this.elNavHome) {
+      this.elNavHome.addEventListener("click", () => {
+        this.setActiveNav(this.elNavHome);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+    if (this.elNavAnalytics) {
+      this.elNavAnalytics.addEventListener("click", () => {
+        this.setActiveNav(this.elNavAnalytics);
+        const analyticsEl = document.querySelector(".analytics-section");
+        if (analyticsEl) analyticsEl.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+    if (this.elNavAdd) {
+      this.elNavAdd.addEventListener("click", () => {
+        this.setActiveNav(this.elNavAdd);
+        this.openModal();
+      });
+    }
   }
 
   setActiveNav(selectedBtn) {
-    [this.elNavHome, this.elNavAnalytics, this.elNavAdd, this.elNavSettings].forEach(btn => {
-      btn.classList.remove("active");
-    });
-    selectedBtn.classList.add("active");
+    [this.elNavHome, this.elNavAnalytics, this.elNavAdd, this.elNavAuthMobile]
+      .filter(Boolean)
+      .forEach(btn => {
+        btn.classList.remove("active");
+      });
+    if (selectedBtn) selectedBtn.classList.add("active");
   }
 
   t(key, params = {}) {
@@ -1097,9 +1145,19 @@ class BudgetApp {
   }
 
   async handleLogin() {
-    const email = this.elLoginEmailInput.value.trim();
-    const password = this.elLoginPasswordInput.value;
-    if (!email || !password || !this.supabase) return;
+    const email = this.elLoginEmailInput ? this.elLoginEmailInput.value.trim() : "";
+    const password = this.elLoginPasswordInput ? this.elLoginPasswordInput.value : "";
+    if (!email || !password) {
+      this.showToast(this.currentLang === "ko" ? "이메일과 비밀번호를 입력해주세요." : "Please enter email and password.");
+      return;
+    }
+    if (!this.supabase) {
+      this.initSupabase();
+      if (!this.supabase) {
+        this.showToast(this.currentLang === "ko" ? "Supabase 연동 실패. 네트워크 연결을 확인하세요." : "Supabase connection failed.");
+        return;
+      }
+    }
 
     try {
       const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
@@ -1110,33 +1168,63 @@ class BudgetApp {
       this.showToast(this.t("toast_login_success"));
       await this.fetchCloudData();
     } catch (err) {
-      this.showToast(this.t("toast_auth_error", { error: err.message }));
+      let msg = err.message;
+      if (msg === "Invalid login credentials") {
+        msg = this.currentLang === "ko" ? "이메일 또는 비밀번호가 올바르지 않습니다." : "Invalid email or password.";
+      }
+      this.showToast(this.t("toast_auth_error", { error: msg }));
     }
   }
 
   async handleSignup() {
-    const email = this.elSignupEmailInput.value.trim();
-    const password = this.elSignupPasswordInput.value;
-    if (!email || !password || !this.supabase) return;
+    const email = this.elSignupEmailInput ? this.elSignupEmailInput.value.trim() : "";
+    const password = this.elSignupPasswordInput ? this.elSignupPasswordInput.value : "";
+    if (!email || !password) {
+      this.showToast(this.currentLang === "ko" ? "이메일과 비밀번호를 입력해주세요." : "Please enter email and password.");
+      return;
+    }
+    if (password.length < 6) {
+      this.showToast(this.currentLang === "ko" ? "비밀번호는 6자 이상이어야 합니다." : "Password must be at least 6 characters.");
+      return;
+    }
+    if (!this.supabase) {
+      this.initSupabase();
+      if (!this.supabase) {
+        this.showToast(this.currentLang === "ko" ? "Supabase 연동 실패. 네트워크 연결을 확인하세요." : "Supabase connection failed.");
+        return;
+      }
+    }
 
     try {
       const { data, error } = await this.supabase.auth.signUp({ email, password });
       if (error) throw error;
 
-      // Auto login immediately after signup
-      const loginRes = await this.supabase.auth.signInWithPassword({ email, password });
-      if (loginRes.data && loginRes.data.user) {
-        this.currentUser = loginRes.data.user;
+      if (data.session && data.user) {
+        this.currentUser = data.user;
         this.updateAuthUI();
         this.closeAuthModal();
         this.showToast(this.t("toast_login_success"));
         await this.fetchCloudData();
       } else {
-        this.closeAuthModal();
-        this.showToast(this.t("toast_signup_success"));
+        // Try auto-login immediately
+        const loginRes = await this.supabase.auth.signInWithPassword({ email, password }).catch(() => null);
+        if (loginRes && loginRes.data && loginRes.data.user) {
+          this.currentUser = loginRes.data.user;
+          this.updateAuthUI();
+          this.closeAuthModal();
+          this.showToast(this.t("toast_login_success"));
+          await this.fetchCloudData();
+        } else {
+          this.closeAuthModal();
+          this.showToast(this.t("toast_signup_success"));
+        }
       }
     } catch (err) {
-      this.showToast(this.t("toast_auth_error", { error: err.message }));
+      let msg = err.message;
+      if (msg.includes("already registered")) {
+        msg = this.currentLang === "ko" ? "이미 가입된 이메일 계정입니다." : "User already registered.";
+      }
+      this.showToast(this.t("toast_auth_error", { error: msg }));
     }
   }
 
@@ -1161,17 +1249,24 @@ class BudgetApp {
         .select("*")
         .eq("user_id", this.currentUser.id);
 
-      if (!txError && txData && txData.length > 0) {
-        this.transactions = txData.map(tx => ({
-          id: tx.id,
-          type: tx.type,
-          amount: Number(tx.amount),
-          title: tx.title,
-          category: tx.category,
-          channel: tx.channel,
-          date: tx.date,
-          memo: tx.memo
-        }));
+      if (!txError && txData) {
+        if (txData.length > 0) {
+          this.transactions = txData.map(tx => ({
+            id: tx.id,
+            type: tx.type,
+            amount: Number(tx.amount),
+            title: tx.title,
+            category: tx.category,
+            channel: tx.channel,
+            date: tx.date,
+            memo: tx.memo
+          }));
+        } else if (this.transactions && this.transactions.length > 0) {
+          // Upload local sample/initial transactions to cloud if user has 0 cloud transactions
+          for (const tx of this.transactions) {
+            await this.syncCloudTransaction(tx, "upsert");
+          }
+        }
         this.saveTransactions();
       }
 
@@ -1180,11 +1275,13 @@ class BudgetApp {
         .from("user_settings")
         .select("*")
         .eq("user_id", this.currentUser.id)
-        .single();
+        .maybeSingle();
 
       if (!settingsError && settingsData) {
         this.initialBalance = Number(settingsData.initial_balance) || 0;
         localStorage.setItem("budget_ledger_initial_balance", this.initialBalance);
+      } else if (!settingsData) {
+        await this.syncCloudInitialBalance();
       }
 
       this.render();

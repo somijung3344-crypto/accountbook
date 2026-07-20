@@ -248,9 +248,11 @@ class BudgetApp {
     this.monthlyBudget = 2500000; // Default 2.5 Million KRW budget
     this.initialBalance = Number(localStorage.getItem("budget_ledger_initial_balance")) || 0;
     
-    // Supabase State
-    this.spUrl = localStorage.getItem("budget_ledger_sp_url") || "https://timheegofhlsdecruaxb.supabase.co";
-    this.spKey = localStorage.getItem("budget_ledger_sp_key") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpbWhlZWdvZmhsc2RlY3J1YXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzU3NjksImV4cCI6MjEwMDExMTc2OX0.sKQCkHd5R5Sqm4kT9qnb64tHcpG4Pwg19RZFxWYtWG8";
+    // Supabase State - Connected to bohobndspbnrusdjdsap
+    this.spUrl = "https://bohobndspbnrusdjdsap.supabase.co";
+    this.spKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvaG9ibmRzcGJucnVzZGpkc2FwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzYzNTIsImV4cCI6MjEwMDExMjM1Mn0.Z7CqvQiZTFHB9rrO0unSaoIiKFNyLW8QjeGmSE0IGkM";
+    localStorage.setItem("budget_ledger_sp_url", this.spUrl);
+    localStorage.setItem("budget_ledger_sp_key", this.spKey);
     this.supabase = null;
     this.currentUser = null;
 

@@ -308,35 +308,35 @@
         <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup">회원가입</button>
       </div>
 
-      <!-- Tab 1: Login Fields (NOT a form) -->
-      <div id="loginPanel" class="auth-panel">
+      <!-- Tab 1: Login Form -->
+      <form id="loginForm" class="auth-panel">
         <div class="form-group">
           <label class="form-label" for="loginEmailInput" data-i18n="label_email">이메일</label>
-          <input type="email" id="loginEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email">
+          <input type="email" id="loginEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email" required>
         </div>
         <div class="form-group">
           <label class="form-label" for="loginPasswordInput" data-i18n="label_password">비밀번호</label>
-          <input type="password" id="loginPasswordInput" class="form-input" placeholder="••••••••" autocomplete="current-password">
+          <input type="password" id="loginPasswordInput" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
         </div>
-      </div>
+        <div class="auth-action-bar">
+          <button type="submit" id="loginSubmitBtn" class="btn-primary auth-submit-btn">로그인하기</button>
+        </div>
+      </form>
 
-      <!-- Tab 2: Signup Fields (NOT a form) -->
-      <div id="signupPanel" class="auth-panel" style="display:none;">
+      <!-- Tab 2: Signup Form -->
+      <form id="signupForm" class="auth-panel" style="display:none;">
         <div class="form-group">
           <label class="form-label" for="signupEmailInput" data-i18n="label_email">이메일</label>
-          <input type="email" id="signupEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email">
+          <input type="email" id="signupEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email" required>
         </div>
         <div class="form-group">
           <label class="form-label" for="signupPasswordInput" data-i18n="label_password">비밀번호 (6자 이상)</label>
-          <input type="password" id="signupPasswordInput" class="form-input" placeholder="••••••••" autocomplete="new-password">
+          <input type="password" id="signupPasswordInput" class="form-input" placeholder="••••••••" autocomplete="new-password" required>
         </div>
-      </div>
-
-      <!-- Action Button: ALWAYS visible, outside any form -->
-      <div class="auth-action-bar">
-        <button type="button" id="loginSubmitBtn" class="btn-primary auth-submit-btn">로그인하기</button>
-        <button type="button" id="signupSubmitBtn" class="btn-primary auth-submit-btn" style="display:none;">회원가입 완료</button>
-      </div>
+        <div class="auth-action-bar">
+          <button type="submit" id="signupSubmitBtn" class="btn-primary auth-submit-btn">회원가입 완료</button>
+        </div>
+      </form>
 
     </div>
   </div>

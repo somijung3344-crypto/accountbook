@@ -366,9 +366,8 @@ class BudgetApp {
     this.elCloseAuthModalBtn = document.getElementById("closeAuthModalBtn");
     this.elTabLoginBtn = document.getElementById("tabLoginBtn");
     this.elTabSignupBtn = document.getElementById("tabSignupBtn");
-    // New panel-based structure (no forms)
-    this.elLoginPanel = document.getElementById("loginPanel");
-    this.elSignupPanel = document.getElementById("signupPanel");
+    this.elLoginForm = document.getElementById("loginForm");
+    this.elSignupForm = document.getElementById("signupForm");
     this.elLoginSubmitBtn = document.getElementById("loginSubmitBtn");
     this.elSignupSubmitBtn = document.getElementById("signupSubmitBtn");
     this.elLoginEmailInput = document.getElementById("loginEmailInput");
@@ -420,35 +419,19 @@ class BudgetApp {
     if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
     if (this.elTabSignupBtn) this.elTabSignupBtn.addEventListener("click", () => this.switchAuthTab("signup"));
 
-    // Direct button click handlers
-    if (this.elLoginSubmitBtn) {
-      this.elLoginSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleLogin(); });
+    // Form submit handlers for login and signup
+    if (this.elLoginForm) {
+      this.elLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
     }
-    if (this.elSignupSubmitBtn) {
-      this.elSignupSubmitBtn.addEventListener("click", (e) => { e.preventDefault(); this.handleSignup(); });
+    if (this.elSignupForm) {
+      this.elSignupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleSignup();
+      });
     }
-
-    // Enter key submit for login/signup inputs
-    [this.elLoginEmailInput, this.elLoginPasswordInput].forEach(input => {
-      if (input) {
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            this.handleLogin();
-          }
-        });
-      }
-    });
-    [this.elSignupEmailInput, this.elSignupPasswordInput].forEach(input => {
-      if (input) {
-        input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            this.handleSignup();
-          }
-        });
-      }
-    });
 
     // Close modals on backdrop click
     [this.elTxModal, this.elInitialBalanceModal, this.elAuthModal].forEach(modal => {
@@ -456,6 +439,7 @@ class BudgetApp {
         modal.addEventListener("click", (e) => {
           if (e.target === modal) {
             modal.classList.remove("active");
+            document.body.classList.remove("modal-open");
           }
         });
       }
@@ -954,10 +938,12 @@ class BudgetApp {
     }
 
     this.elTxModal.classList.add("active");
+    document.body.classList.add("modal-open");
   }
 
   closeModal() {
     this.elTxModal.classList.remove("active");
+    document.body.classList.remove("modal-open");
   }
 
   setModalType(type) {
@@ -1044,12 +1030,14 @@ class BudgetApp {
     }
     if (this.elInitialBalanceModal) {
       this.elInitialBalanceModal.classList.add("active");
+      document.body.classList.add("modal-open");
     }
   }
 
   closeInitialModal() {
     if (this.elInitialBalanceModal) {
       this.elInitialBalanceModal.classList.remove("active");
+      document.body.classList.remove("modal-open");
     }
   }
 
@@ -1122,10 +1110,12 @@ class BudgetApp {
   openAuthModal() {
     this.switchAuthTab("login");
     this.elAuthModal.classList.add("active");
+    document.body.classList.add("modal-open");
   }
 
   closeAuthModal() {
     this.elAuthModal.classList.remove("active");
+    document.body.classList.remove("modal-open");
   }
 
   switchAuthTab(tab) {
@@ -1133,16 +1123,12 @@ class BudgetApp {
 
     if (tab === "login") {
       if (this.elTabLoginBtn) this.elTabLoginBtn.classList.add("active");
-      if (this.elLoginPanel) this.elLoginPanel.style.display = "flex";
-      if (this.elSignupPanel) this.elSignupPanel.style.display = "none";
-      if (this.elLoginSubmitBtn) this.elLoginSubmitBtn.style.display = "block";
-      if (this.elSignupSubmitBtn) this.elSignupSubmitBtn.style.display = "none";
+      if (this.elLoginForm) this.elLoginForm.style.display = "flex";
+      if (this.elSignupForm) this.elSignupForm.style.display = "none";
     } else if (tab === "signup") {
       if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
-      if (this.elLoginPanel) this.elLoginPanel.style.display = "none";
-      if (this.elSignupPanel) this.elSignupPanel.style.display = "flex";
-      if (this.elLoginSubmitBtn) this.elLoginSubmitBtn.style.display = "none";
-      if (this.elSignupSubmitBtn) this.elSignupSubmitBtn.style.display = "block";
+      if (this.elLoginForm) this.elLoginForm.style.display = "none";
+      if (this.elSignupForm) this.elSignupForm.style.display = "flex";
     }
   }
 

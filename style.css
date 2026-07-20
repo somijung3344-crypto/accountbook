@@ -975,7 +975,25 @@ a {
     font-size: 12px;
   }
 
-  /* Force 2x2 Grid for Summary Cards on Mobile */
+  /* Hide desktop auth button on mobile — moved to bottom nav */
+  .auth-btn-desktop {
+    display: none !important;
+  }
+
+  /* Mobile Nav Auth Tab — 로그인 상태에 따라 색상 강조 */
+  #navAuthMobile {
+    position: relative;
+  }
+
+  #navAuthMobile.logged-in {
+    color: var(--income);
+  }
+
+  #navAuthMobile.logged-in #navAuthIcon {
+    color: var(--income);
+  }
+
+
   .summary-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 8px;

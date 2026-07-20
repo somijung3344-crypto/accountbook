@@ -377,7 +377,9 @@ class BudgetApp {
     this.elNavHome = document.getElementById("navHome");
     this.elNavAnalytics = document.getElementById("navAnalytics");
     this.elNavAdd = document.getElementById("navAdd");
-    this.elNavSettings = document.getElementById("navSettings");
+    this.elNavAuthMobile = document.getElementById("navAuthMobile");
+    this.elNavAuthIcon = document.getElementById("navAuthIcon");
+    this.elNavAuthLabel = document.getElementById("navAuthLabel");
     this.elToast = document.getElementById("toast");
   }
 
@@ -395,6 +397,17 @@ class BudgetApp {
 
     if (this.elCloseAuthModalBtn) {
       this.elCloseAuthModalBtn.addEventListener("click", () => this.closeAuthModal());
+    }
+
+    // Mobile bottom nav auth button
+    if (this.elNavAuthMobile) {
+      this.elNavAuthMobile.addEventListener("click", () => {
+        if (this.currentUser) {
+          this.handleLogout();
+        } else {
+          this.openAuthModal();
+        }
+      });
     }
 
     if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
@@ -1031,16 +1044,29 @@ class BudgetApp {
   }
 
   updateAuthUI() {
-    if (!this.elAuthBtnLabel) return;
     if (this.currentUser) {
       const shortEmail = this.currentUser.email.split("@")[0];
-      this.elAuthBtnLabel.textContent = `${shortEmail} (${this.t("btn_logout")})`;
-      this.elAuthBtn.classList.remove("btn-secondary");
-      this.elAuthBtn.classList.add("btn-primary");
+      // Desktop header button
+      if (this.elAuthBtnLabel) this.elAuthBtnLabel.textContent = `${shortEmail} (${this.t("btn_logout")})`;
+      if (this.elAuthBtn) {
+        this.elAuthBtn.classList.remove("btn-secondary");
+        this.elAuthBtn.classList.add("btn-primary");
+      }
+      // Mobile bottom nav
+      if (this.elNavAuthLabel) this.elNavAuthLabel.textContent = shortEmail;
+      if (this.elNavAuthIcon) this.elNavAuthIcon.textContent = "account_circle";
+      if (this.elNavAuthMobile) this.elNavAuthMobile.classList.add("logged-in");
     } else {
-      this.elAuthBtnLabel.textContent = this.t("btn_login");
-      this.elAuthBtn.classList.remove("btn-primary");
-      this.elAuthBtn.classList.add("btn-secondary");
+      // Desktop header button
+      if (this.elAuthBtnLabel) this.elAuthBtnLabel.textContent = this.t("btn_login");
+      if (this.elAuthBtn) {
+        this.elAuthBtn.classList.remove("btn-primary");
+        this.elAuthBtn.classList.add("btn-secondary");
+      }
+      // Mobile bottom nav
+      if (this.elNavAuthLabel) this.elNavAuthLabel.textContent = "로그인";
+      if (this.elNavAuthIcon) this.elNavAuthIcon.textContent = "login";
+      if (this.elNavAuthMobile) this.elNavAuthMobile.classList.remove("logged-in");
     }
   }
 

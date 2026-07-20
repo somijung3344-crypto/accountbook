@@ -303,7 +303,7 @@
       </div>
 
       <!-- Modal Tabs Header -->
-      <div class="auth-tab-header">
+      <div class="auth-tab-header" id="authTabHeader">
         <button type="button" class="tab-btn active" id="tabLoginBtn" data-i18n="tab_login">로그인</button>
         <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup">회원가입</button>
       </div>
@@ -321,6 +321,14 @@
         <div class="auth-action-bar">
           <button type="submit" id="loginSubmitBtn" class="btn-primary auth-submit-btn">로그인하기</button>
         </div>
+        
+        <div class="oauth-divider">
+          <span>또는 SNS 간편로그인</span>
+        </div>
+        <button type="button" class="btn-kakao kakao-login-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.764c0 2.76 1.83 5.176 4.606 6.541l-.963 3.528c-.085.312.268.56.54.382l4.167-2.736c.536.058 1.082.089 1.65.089 5.523 0 10-3.477 10-7.764S17.523 3 12 3z"/></svg>
+          <span>카카오톡으로 시작하기</span>
+        </button>
       </form>
 
       <!-- Tab 2: Signup Form -->
@@ -336,7 +344,38 @@
         <div class="auth-action-bar">
           <button type="submit" id="signupSubmitBtn" class="btn-primary auth-submit-btn">회원가입 완료</button>
         </div>
+
+        <div class="oauth-divider">
+          <span>또는 SNS 간편로그인</span>
+        </div>
+        <button type="button" class="btn-kakao kakao-login-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.764c0 2.76 1.83 5.176 4.606 6.541l-.963 3.528c-.085.312.268.56.54.382l4.167-2.736c.536.058 1.082.089 1.65.089 5.523 0 10-3.477 10-7.764S17.523 3 12 3z"/></svg>
+          <span>카카오톡으로 시작하기</span>
+        </button>
       </form>
+
+      <!-- Logged-In User Profile Panel -->
+      <div id="userProfilePanel" class="auth-panel" style="display:none;">
+        <div class="profile-info">
+          <div class="profile-avatar">
+            <span class="material-symbols-outlined">account_circle</span>
+          </div>
+          <div class="profile-details">
+            <div class="profile-email" id="profileEmailVal">user@example.com</div>
+            <div class="profile-badge">클라우드 동기화 사용 중</div>
+          </div>
+        </div>
+        <div class="profile-actions" style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+          <button type="button" id="logoutModalBtn" class="btn-secondary" style="width:100%; justify-content:center; padding:12px;">
+            <span class="material-symbols-outlined">logout</span>
+            <span>로그아웃</span>
+          </button>
+          <button type="button" id="deleteAccountBtn" class="btn-danger" style="width:100%; justify-content:center; padding:12px;">
+            <span class="material-symbols-outlined">delete_forever</span>
+            <span>회원 탈퇴 (데이터 삭제)</span>
+          </button>
+        </div>
+      </div>
 
     </div>
   </div>

@@ -364,10 +364,15 @@ class BudgetApp {
     this.elAuthBtnLabel = document.getElementById("authBtnLabel");
     this.elAuthModal = document.getElementById("authModal");
     this.elCloseAuthModalBtn = document.getElementById("closeAuthModalBtn");
+    this.elAuthTabHeader = document.getElementById("authTabHeader");
     this.elTabLoginBtn = document.getElementById("tabLoginBtn");
     this.elTabSignupBtn = document.getElementById("tabSignupBtn");
     this.elLoginForm = document.getElementById("loginForm");
     this.elSignupForm = document.getElementById("signupForm");
+    this.elUserProfilePanel = document.getElementById("userProfilePanel");
+    this.elProfileEmailVal = document.getElementById("profileEmailVal");
+    this.elLogoutModalBtn = document.getElementById("logoutModalBtn");
+    this.elDeleteAccountBtn = document.getElementById("deleteAccountBtn");
     this.elLoginSubmitBtn = document.getElementById("loginSubmitBtn");
     this.elSignupSubmitBtn = document.getElementById("signupSubmitBtn");
     this.elLoginEmailInput = document.getElementById("loginEmailInput");
@@ -389,13 +394,7 @@ class BudgetApp {
     // Auth Button & Modal Events
     if (this.elAuthBtn) {
       this.elAuthBtn.addEventListener("click", () => {
-        if (this.currentUser) {
-          if (confirm(this.currentLang === "ko" ? "로그아웃 하시겠습니까?" : "Do you want to log out?")) {
-            this.handleLogout();
-          }
-        } else {
-          this.openAuthModal();
-        }
+        this.openAuthModal();
       });
     }
 
@@ -406,18 +405,29 @@ class BudgetApp {
     // Mobile bottom nav auth button
     if (this.elNavAuthMobile) {
       this.elNavAuthMobile.addEventListener("click", () => {
-        if (this.currentUser) {
-          if (confirm(this.currentLang === "ko" ? "로그아웃 하시겠습니까?" : "Do you want to log out?")) {
-            this.handleLogout();
-          }
-        } else {
-          this.openAuthModal();
-        }
+        this.openAuthModal();
       });
     }
 
     if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
     if (this.elTabSignupBtn) this.elTabSignupBtn.addEventListener("click", () => this.switchAuthTab("signup"));
+
+    // Kakao OAuth Login buttons
+    document.querySelectorAll(".kakao-login-btn").forEach(btn => {
+      btn.addEventListener("click", () => this.handleKakaoLogin());
+    });
+
+    // Profile panel buttons
+    if (this.elLogoutModalBtn) {
+      this.elLogoutModalBtn.addEventListener("click", () => {
+        this.handleLogout();
+        this.closeAuthModal();
+      });
+    }
+
+    if (this.elDeleteAccountBtn) {
+      this.elDeleteAccountBtn.addEventListener("click", () => this.handleAccountDeletion());
+    }
 
     // Form submit handlers for login and signup
     if (this.elLoginForm) {
@@ -1108,7 +1118,17 @@ class BudgetApp {
   }
 
   openAuthModal() {
-    this.switchAuthTab("login");
+    if (this.currentUser) {
+      if (this.elAuthTabHeader) this.elAuthTabHeader.style.display = "none";
+      if (this.elLoginForm) this.elLoginForm.style.display = "none";
+      if (this.elSignupForm) this.elSignupForm.style.display = "none";
+      if (this.elUserProfilePanel) this.elUserProfilePanel.style.display = "flex";
+      if (this.elProfileEmailVal) this.elProfileEmailVal.textContent = this.currentUser.email;
+    } else {
+      if (this.elAuthTabHeader) this.elAuthTabHeader.style.display = "flex";
+      if (this.elUserProfilePanel) this.elUserProfilePanel.style.display = "none";
+      this.switchAuthTab("login");
+    }
     this.elAuthModal.classList.add("active");
     document.body.classList.add("modal-open");
   }
@@ -1129,6 +1149,31 @@ class BudgetApp {
       if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
       if (this.elLoginForm) this.elLoginForm.style.display = "none";
       if (this.elSignupForm) this.elSignupForm.style.display = "flex";
+    }
+  }
+
+  async handleKakaoLogin() {
+    if (!this.supabase) {
+      this.initSupabase();
+    }
+    if (!this.supabase) return;
+
+    try {
+      const { data, error } = await this.supabase.auth.signInWithOAuth({
+        provider: "kakao",
+        options: {
+          redirectTo: window.location.origin
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      let msg = err.message;
+      if (msg.includes("Provider kakao is not enabled") || msg.includes("Unsupported provider")) {
+        msg = this.currentLang === "ko"
+          ? "Supabase 대시보드에서 Kakao 인증 제공자 설정이 완료되지 않았습니다."
+          : "Kakao provider is not enabled in Supabase dashboard.";
+      }
+      this.showToast(this.t("toast_auth_error", { error: msg }));
     }
   }
 
@@ -1224,6 +1269,37 @@ class BudgetApp {
     this.updateAuthUI();
     this.showToast(this.t("toast_logout_success"));
     this.render();
+  }
+
+  async handleAccountDeletion() {
+    const confirmMsg = this.currentLang === "ko"
+      ? "정말로 회원 탈퇴를 하시겠습니까?\n모든 클라우드 데이터가 영구 삭제되며 복구할 수 없습니다."
+      : "Are you sure you want to delete your account?\nAll cloud data will be permanently deleted.";
+    
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      if (this.supabase && this.currentUser) {
+        const { error } = await this.supabase.rpc("delete_user_account");
+        if (error) {
+          console.warn("RPC account deletion fallback:", error);
+          await this.supabase.from("transactions").delete().eq("user_id", this.currentUser.id);
+          await this.supabase.from("user_settings").delete().eq("user_id", this.currentUser.id);
+          await this.supabase.auth.signOut();
+        }
+      }
+      this.currentUser = null;
+      this.transactions = SAMPLE_DATA;
+      this.initialBalance = 0;
+      localStorage.removeItem("budget_ledger_data");
+      localStorage.removeItem("budget_ledger_initial_balance");
+      this.updateAuthUI();
+      this.closeAuthModal();
+      this.showToast(this.currentLang === "ko" ? "회원 탈퇴가 완료되었습니다. 데이터가 영구 삭제되었습니다." : "Account successfully deleted.");
+      this.render();
+    } catch (e) {
+      this.showToast(this.t("toast_auth_error", { error: e.message }));
+    }
   }
 
   // --- Cloud Database Data Syncing ---

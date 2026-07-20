@@ -849,9 +849,34 @@ a {
   font-weight: 700;
 }
 
+/* Logged-in state for mobile auth nav item */
+#navAuthMobile.logged-in {
+  color: #16a34a !important;
+  font-weight: 700;
+}
+
+#navAuthMobile.logged-in .material-symbols-outlined {
+  color: #16a34a !important;
+}
+
+/* Green dot badge when logged in */
+#navAuthMobile.logged-in::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #16a34a;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px #16a34a;
+}
+
 .nav-item .material-symbols-outlined {
   font-size: 22px;
 }
+
 
 /* Mobile Floating Action Button (FAB) */
 .fab-btn {

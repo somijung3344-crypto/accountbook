@@ -1085,10 +1085,10 @@ class BudgetApp {
 
     if (tab === "login") {
       if (this.elTabLoginBtn) this.elTabLoginBtn.classList.add("active");
-      if (this.elLoginForm) this.elLoginForm.style.display = "flex";
+      if (this.elLoginForm) this.elLoginForm.style.display = "block";
     } else if (tab === "signup") {
       if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
-      if (this.elSignupForm) this.elSignupForm.style.display = "flex";
+      if (this.elSignupForm) this.elSignupForm.style.display = "block";
     }
   }
 

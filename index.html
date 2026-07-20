@@ -292,51 +292,51 @@
     </div>
   </div>
 
-  <!-- Supabase Auth & API Key Modal -->
+  <!-- Supabase Auth Modal -->
   <div class="modal-overlay" id="authModal">
-    <div class="modal-card">
+    <div class="modal-card auth-modal-card">
       <div class="modal-header">
-        <h3 class="modal-title" id="authModalTitle" data-i18n="modal_auth_title">Supabase 클라우드 동기화</h3>
+        <h3 class="modal-title" id="authModalTitle" data-i18n="modal_auth_title">클라우드 동기화</h3>
         <button class="btn-icon" id="closeAuthModalBtn">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
 
       <!-- Modal Tabs Header -->
-      <div class="tab-header" style="display:flex; border-bottom:1px solid var(--border); padding:0 24px; background:var(--surface-sub);">
-        <button type="button" class="tab-btn active" id="tabLoginBtn" data-i18n="tab_login" style="flex:1;">로그인</button>
-        <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup" style="flex:1;">회원가입</button>
+      <div class="auth-tab-header">
+        <button type="button" class="tab-btn active" id="tabLoginBtn" data-i18n="tab_login">로그인</button>
+        <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup">회원가입</button>
       </div>
 
-      <!-- Tab 1: Login Form -->
-      <form id="loginForm" class="modal-body auth-tab-content">
+      <!-- Tab 1: Login Fields (NOT a form) -->
+      <div id="loginPanel" class="auth-panel">
         <div class="form-group">
-          <label class="form-label" for="loginEmailInput" data-i18n="label_email">이메일 계정</label>
-          <input type="email" id="loginEmailInput" class="form-input" placeholder="user@example.com" required>
+          <label class="form-label" for="loginEmailInput" data-i18n="label_email">이메일</label>
+          <input type="email" id="loginEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email">
         </div>
         <div class="form-group">
           <label class="form-label" for="loginPasswordInput" data-i18n="label_password">비밀번호</label>
-          <input type="password" id="loginPasswordInput" class="form-input" placeholder="••••••••" required minlength="6">
+          <input type="password" id="loginPasswordInput" class="form-input" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <div class="modal-footer" style="padding-left:0; padding-right:0; background:none; border:none;">
-          <button type="submit" class="btn-primary" style="width:100%; justify-content:center;" data-i18n="btn_login">로그인하기</button>
-        </div>
-      </form>
+      </div>
 
-      <!-- Tab 2: Signup Form -->
-      <form id="signupForm" class="modal-body auth-tab-content" style="display:none;">
+      <!-- Tab 2: Signup Fields (NOT a form) -->
+      <div id="signupPanel" class="auth-panel" style="display:none;">
         <div class="form-group">
-          <label class="form-label" for="signupEmailInput" data-i18n="label_email">이메일 계정</label>
-          <input type="email" id="signupEmailInput" class="form-input" placeholder="user@example.com" required>
+          <label class="form-label" for="signupEmailInput" data-i18n="label_email">이메일</label>
+          <input type="email" id="signupEmailInput" class="form-input" placeholder="user@example.com" autocomplete="email">
         </div>
         <div class="form-group">
-          <label class="form-label" for="signupPasswordInput" data-i18n="label_password">비밀번호 설정</label>
-          <input type="password" id="signupPasswordInput" class="form-input" placeholder="6자리 이상 비밀번호 입력" required minlength="6">
+          <label class="form-label" for="signupPasswordInput" data-i18n="label_password">비밀번호 (6자 이상)</label>
+          <input type="password" id="signupPasswordInput" class="form-input" placeholder="••••••••" autocomplete="new-password">
         </div>
-        <div class="modal-footer" style="padding-left:0; padding-right:0; background:none; border:none;">
-          <button type="submit" class="btn-primary" style="width:100%; justify-content:center;" data-i18n="btn_signup">회원가입 완료</button>
-        </div>
-      </form>
+      </div>
+
+      <!-- Action Button: ALWAYS visible, outside any form -->
+      <div class="auth-action-bar">
+        <button type="button" id="loginSubmitBtn" class="btn-primary auth-submit-btn">로그인하기</button>
+        <button type="button" id="signupSubmitBtn" class="btn-primary auth-submit-btn" style="display:none;">회원가입 완료</button>
+      </div>
 
     </div>
   </div>

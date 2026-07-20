@@ -1218,4 +1218,63 @@ a {
   border-bottom-color: var(--primary);
 }
 
+/* ======================================
+   Auth Modal: New Panel-Based Structure
+   ====================================== */
+.auth-modal-card {
+  display: flex;
+  flex-direction: column;
+}
 
+.auth-tab-header {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-sub);
+}
+
+.auth-tab-header .tab-btn {
+  flex: 1;
+}
+
+.auth-panel {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-action-bar {
+  padding: 12px 24px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.auth-submit-btn {
+  width: 100%;
+  justify-content: center;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  display: block;
+}
+
+/* Mobile: action bar sticks to bottom of modal */
+@media (max-width: 767px) {
+  .auth-action-bar {
+    padding: 12px 18px env(safe-area-inset-bottom, 16px);
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  .auth-panel {
+    padding: 16px 18px;
+    gap: 14px;
+  }
+}

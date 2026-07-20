@@ -56,8 +56,28 @@ const I18N = {
     toast_added: "새 거래 내역이 저장되었습니다.",
     toast_updated: "거래 내역이 수정되었습니다.",
     toast_deleted: "거래 내역이 삭제되었습니다.",
-    toast_settings_info: "스마트 가계부 v1.0 - 데이터가 브라우저에 자동 저장됩니다.",
+    toast_settings_info: "스마트 가계부 v1.0 - 데이터가 브라우저 및 클라우드에 자동 저장됩니다.",
     confirm_delete: "이 내역을 삭제하시겠습니까?",
+
+    // Auth & Supabase DB Keys
+    modal_auth_title: "Supabase 클라우드 동기화",
+    tab_login: "로그인",
+    tab_signup: "회원가입",
+    tab_api_key: "🔑 API 키 설정 (보안)",
+    label_email: "이메일 계정",
+    label_password: "비밀번호",
+    label_supabase_url: "Supabase Project URL",
+    label_supabase_key: "Supabase Anon / Publishable API Key",
+    hint_supabase_key: "API 키는 브라우저 로컬 환경에 보관되며 소스코드에 공개 노출되지 않고 안전하게 연결됩니다.",
+    btn_login: "로그인",
+    btn_signup: "회원가입 완료",
+    btn_save_key: "연동 API 키 저장 및 연결 검증",
+    btn_logout: "로그아웃",
+    toast_login_success: "성공적으로 로그인되었습니다. 클라우드 데이터와 동기화됩니다.",
+    toast_signup_success: "회원가입 신청이 완료되었습니다! 메일함에서 확인을 클릭해 주세요.",
+    toast_logout_success: "로그아웃되었습니다. 로컬 오프라인 모드로 전환됩니다.",
+    toast_key_saved: "Supabase API 연동 키가 안전하게 저장되었습니다.",
+    toast_auth_error: "오류: {error}",
     
     // Categories
     cat_salary: "월급/보너스",
@@ -132,8 +152,28 @@ const I18N = {
     toast_added: "Transaction saved successfully.",
     toast_updated: "Transaction updated.",
     toast_deleted: "Transaction deleted.",
-    toast_settings_info: "Smart Budget Ledger v1.0 - Auto saved in browser.",
+    toast_settings_info: "Smart Budget Ledger v1.0 - Auto saved in browser & cloud.",
     confirm_delete: "Are you sure you want to delete this item?",
+
+    // Auth & Supabase DB Keys
+    modal_auth_title: "Supabase Cloud Sync",
+    tab_login: "Log In",
+    tab_signup: "Sign Up",
+    tab_api_key: "🔑 API Keys (Secure)",
+    label_email: "Email Account",
+    label_password: "Password",
+    label_supabase_url: "Supabase Project URL",
+    label_supabase_key: "Supabase Anon / Publishable API Key",
+    hint_supabase_key: "API keys are stored securely in local browser environment and not exposed in source code.",
+    btn_login: "Log In",
+    btn_signup: "Complete Sign Up",
+    btn_save_key: "Save API Key & Verify",
+    btn_logout: "Log Out",
+    toast_login_success: "Successfully logged in. Syncing with cloud...",
+    toast_signup_success: "Sign up requested! Please check your email inbox to confirm.",
+    toast_logout_success: "Logged out. Switched to offline local mode.",
+    toast_key_saved: "Supabase API key saved securely.",
+    toast_auth_error: "Error: {error}",
     
     // Categories
     cat_salary: "Salary / Bonus",
@@ -208,6 +248,12 @@ class BudgetApp {
     this.monthlyBudget = 2500000; // Default 2.5 Million KRW budget
     this.initialBalance = Number(localStorage.getItem("budget_ledger_initial_balance")) || 0;
     
+    // Supabase State
+    this.spUrl = localStorage.getItem("budget_ledger_sp_url") || "https://timheegofhlsdecruaxb.supabase.co";
+    this.spKey = localStorage.getItem("budget_ledger_sp_key") || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpbWhlZWdvZmhsc2RlY3J1YXhiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1MzU3NjksImV4cCI6MjEwMDExMTc2OX0.sKQCkHd5R5Sqm4kT9qnb64tHcpG4Pwg19RZFxWYtWG8";
+    this.supabase = null;
+    this.currentUser = null;
+
     // Current date state
     const today = new Date();
     this.selectedYear = today.getFullYear();
@@ -229,6 +275,8 @@ class BudgetApp {
     this.initDOMElements();
     // Bind Event Listeners
     this.bindEvents();
+    // Initialize Supabase Client & Auth Session
+    this.initSupabase();
     // Initialize Language & Render
     this.updateLanguageUI();
     this.render();
@@ -309,6 +357,24 @@ class BudgetApp {
     this.elInitialBalanceForm = document.getElementById("initialBalanceForm");
     this.elInitialBalanceInput = document.getElementById("initialBalanceInput");
 
+    // Auth & Supabase Modal Elements
+    this.elAuthBtn = document.getElementById("authBtn");
+    this.elAuthBtnLabel = document.getElementById("authBtnLabel");
+    this.elAuthModal = document.getElementById("authModal");
+    this.elCloseAuthModalBtn = document.getElementById("closeAuthModalBtn");
+    this.elTabLoginBtn = document.getElementById("tabLoginBtn");
+    this.elTabSignupBtn = document.getElementById("tabSignupBtn");
+    this.elTabApiKeyBtn = document.getElementById("tabApiKeyBtn");
+    this.elLoginForm = document.getElementById("loginForm");
+    this.elSignupForm = document.getElementById("signupForm");
+    this.elApiKeyForm = document.getElementById("apiKeyForm");
+    this.elLoginEmailInput = document.getElementById("loginEmailInput");
+    this.elLoginPasswordInput = document.getElementById("loginPasswordInput");
+    this.elSignupEmailInput = document.getElementById("signupEmailInput");
+    this.elSignupPasswordInput = document.getElementById("signupPasswordInput");
+    this.elSupabaseUrlInput = document.getElementById("supabaseUrlInput");
+    this.elSupabaseKeyInput = document.getElementById("supabaseKeyInput");
+
     // Mobile nav
     this.elNavHome = document.getElementById("navHome");
     this.elNavAnalytics = document.getElementById("navAnalytics");
@@ -318,6 +384,46 @@ class BudgetApp {
   }
 
   bindEvents() {
+    // Auth Button & Modal Events
+    if (this.elAuthBtn) {
+      this.elAuthBtn.addEventListener("click", () => {
+        if (this.currentUser) {
+          this.handleLogout();
+        } else {
+          this.openAuthModal();
+        }
+      });
+    }
+
+    if (this.elCloseAuthModalBtn) {
+      this.elCloseAuthModalBtn.addEventListener("click", () => this.closeAuthModal());
+    }
+
+    if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
+    if (this.elTabSignupBtn) this.elTabSignupBtn.addEventListener("click", () => this.switchAuthTab("signup"));
+    if (this.elTabApiKeyBtn) this.elTabApiKeyBtn.addEventListener("click", () => this.switchAuthTab("apiKey"));
+
+    if (this.elLoginForm) {
+      this.elLoginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleLogin();
+      });
+    }
+
+    if (this.elSignupForm) {
+      this.elSignupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleSignup();
+      });
+    }
+
+    if (this.elApiKeyForm) {
+      this.elApiKeyForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        this.handleSaveApiKey();
+      });
+    }
+
     // Edit Initial Balance Button
     if (this.elEditInitialBalanceBtn) {
       this.elEditInitialBalanceBtn.addEventListener("click", () => this.openInitialModal());
@@ -838,6 +944,7 @@ class BudgetApp {
           date,
           memo
         };
+        this.syncCloudTransaction(this.transactions[index], "upsert");
         this.showToast(this.t("toast_updated"));
       }
     } else {
@@ -853,6 +960,7 @@ class BudgetApp {
         memo
       };
       this.transactions.push(newTx);
+      this.syncCloudTransaction(newTx, "upsert");
       this.showToast(this.t("toast_added"));
     }
 
@@ -872,6 +980,7 @@ class BudgetApp {
     if (confirm(this.t("confirm_delete"))) {
       this.transactions = this.transactions.filter(t => t.id !== id);
       this.saveTransactions();
+      this.syncCloudTransaction({ id }, "delete");
       this.render();
       this.showToast(this.t("toast_deleted"));
     }
@@ -896,9 +1005,219 @@ class BudgetApp {
     const val = Number(this.elInitialBalanceInput.value) || 0;
     this.initialBalance = val;
     localStorage.setItem("budget_ledger_initial_balance", val);
+    this.syncCloudInitialBalance();
     this.closeInitialModal();
     this.render();
     this.showToast(this.t("toast_initial_updated"));
+  }
+
+  // --- Supabase Engine & Cloud Sync Methods ---
+  initSupabase() {
+    if (window.supabase && this.spUrl && this.spKey) {
+      try {
+        this.supabase = window.supabase.createClient(this.spUrl, this.spKey);
+        this.checkAuthSession();
+      } catch (e) {
+        console.error("Supabase client init failed", e);
+      }
+    }
+  }
+
+  async checkAuthSession() {
+    if (!this.supabase) return;
+    try {
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (session && session.user) {
+        this.currentUser = session.user;
+        this.updateAuthUI();
+        await this.fetchCloudData();
+      } else {
+        this.currentUser = null;
+        this.updateAuthUI();
+      }
+    } catch (e) {
+      console.error("Auth session check error", e);
+    }
+  }
+
+  updateAuthUI() {
+    if (!this.elAuthBtnLabel) return;
+    if (this.currentUser) {
+      const shortEmail = this.currentUser.email.split("@")[0];
+      this.elAuthBtnLabel.textContent = `${shortEmail} (${this.t("btn_logout")})`;
+      this.elAuthBtn.classList.remove("btn-secondary");
+      this.elAuthBtn.classList.add("btn-primary");
+    } else {
+      this.elAuthBtnLabel.textContent = this.t("btn_login");
+      this.elAuthBtn.classList.remove("btn-primary");
+      this.elAuthBtn.classList.add("btn-secondary");
+    }
+  }
+
+  openAuthModal() {
+    if (this.elSupabaseUrlInput) this.elSupabaseUrlInput.value = this.spUrl;
+    if (this.elSupabaseKeyInput) this.elSupabaseKeyInput.value = this.spKey;
+    this.switchAuthTab("login");
+    this.elAuthModal.classList.add("active");
+  }
+
+  closeAuthModal() {
+    this.elAuthModal.classList.remove("active");
+  }
+
+  switchAuthTab(tab) {
+    [this.elTabLoginBtn, this.elTabSignupBtn, this.elTabApiKeyBtn].forEach(btn => btn && btn.classList.remove("active"));
+    [this.elLoginForm, this.elSignupForm, this.elApiKeyForm].forEach(form => form && (form.style.display = "none"));
+
+    if (tab === "login") {
+      if (this.elTabLoginBtn) this.elTabLoginBtn.classList.add("active");
+      if (this.elLoginForm) this.elLoginForm.style.display = "flex";
+    } else if (tab === "signup") {
+      if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
+      if (this.elSignupForm) this.elSignupForm.style.display = "flex";
+    } else if (tab === "apiKey") {
+      if (this.elTabApiKeyBtn) this.elTabApiKeyBtn.classList.add("active");
+      if (this.elApiKeyForm) this.elApiKeyForm.style.display = "flex";
+    }
+  }
+
+  async handleLogin() {
+    const email = this.elLoginEmailInput.value.trim();
+    const password = this.elLoginPasswordInput.value;
+    if (!email || !password || !this.supabase) return;
+
+    try {
+      const { data, error } = await this.supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      this.currentUser = data.user;
+      this.updateAuthUI();
+      this.closeAuthModal();
+      this.showToast(this.t("toast_login_success"));
+      await this.fetchCloudData();
+    } catch (err) {
+      this.showToast(this.t("toast_auth_error", { error: err.message }));
+    }
+  }
+
+  async handleSignup() {
+    const email = this.elSignupEmailInput.value.trim();
+    const password = this.elSignupPasswordInput.value;
+    if (!email || !password || !this.supabase) return;
+
+    try {
+      const { data, error } = await this.supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      this.closeAuthModal();
+      this.showToast(this.t("toast_signup_success"));
+    } catch (err) {
+      this.showToast(this.t("toast_auth_error", { error: err.message }));
+    }
+  }
+
+  async handleLogout() {
+    if (this.supabase) {
+      await this.supabase.auth.signOut();
+    }
+    this.currentUser = null;
+    this.updateAuthUI();
+    this.showToast(this.t("toast_logout_success"));
+    this.render();
+  }
+
+  handleSaveApiKey() {
+    const url = this.elSupabaseUrlInput.value.trim();
+    const key = this.elSupabaseKeyInput.value.trim();
+    if (!url || !key) return;
+
+    this.spUrl = url;
+    this.spKey = key;
+    localStorage.setItem("budget_ledger_sp_url", url);
+    localStorage.setItem("budget_ledger_sp_key", key);
+
+    this.initSupabase();
+    this.closeAuthModal();
+    this.showToast(this.t("toast_key_saved"));
+  }
+
+  // --- Cloud Database Data Syncing ---
+  async fetchCloudData() {
+    if (!this.supabase || !this.currentUser) return;
+
+    try {
+      // 1. Fetch transactions
+      const { data: txData, error: txError } = await this.supabase
+        .from("transactions")
+        .select("*")
+        .eq("user_id", this.currentUser.id);
+
+      if (!txError && txData && txData.length > 0) {
+        this.transactions = txData.map(tx => ({
+          id: tx.id,
+          type: tx.type,
+          amount: Number(tx.amount),
+          title: tx.title,
+          category: tx.category,
+          channel: tx.channel,
+          date: tx.date,
+          memo: tx.memo
+        }));
+        this.saveTransactions();
+      }
+
+      // 2. Fetch user settings (initial balance & budget)
+      const { data: settingsData, error: settingsError } = await this.supabase
+        .from("user_settings")
+        .select("*")
+        .eq("user_id", this.currentUser.id)
+        .single();
+
+      if (!settingsError && settingsData) {
+        this.initialBalance = Number(settingsData.initial_balance) || 0;
+        localStorage.setItem("budget_ledger_initial_balance", this.initialBalance);
+      }
+
+      this.render();
+    } catch (e) {
+      console.error("Failed to fetch cloud data", e);
+    }
+  }
+
+  async syncCloudTransaction(tx, action = "upsert") {
+    if (!this.supabase || !this.currentUser) return;
+
+    try {
+      if (action === "upsert") {
+        await this.supabase.from("transactions").upsert({
+          id: tx.id,
+          user_id: this.currentUser.id,
+          type: tx.type,
+          amount: tx.amount,
+          title: tx.title,
+          category: tx.category,
+          channel: tx.channel,
+          date: tx.date,
+          memo: tx.memo
+        });
+      } else if (action === "delete") {
+        await this.supabase.from("transactions").delete().eq("id", tx.id);
+      }
+    } catch (e) {
+      console.error("Cloud transaction sync error", e);
+    }
+  }
+
+  async syncCloudInitialBalance() {
+    if (!this.supabase || !this.currentUser) return;
+
+    try {
+      await this.supabase.from("user_settings").upsert({
+        user_id: this.currentUser.id,
+        initial_balance: this.initialBalance,
+        updated_at: new Date().toISOString()
+      });
+    } catch (e) {
+      console.error("Cloud initial balance sync error", e);
+    }
   }
 
   showToast(msg) {

@@ -1139,3 +1139,26 @@ a {
   }
 }
 
+/* Modal Tab Navigation Buttons */
+.tab-btn {
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.tab-btn:hover {
+  color: var(--text-secondary);
+}
+
+.tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+

@@ -364,16 +364,12 @@ class BudgetApp {
     this.elCloseAuthModalBtn = document.getElementById("closeAuthModalBtn");
     this.elTabLoginBtn = document.getElementById("tabLoginBtn");
     this.elTabSignupBtn = document.getElementById("tabSignupBtn");
-    this.elTabApiKeyBtn = document.getElementById("tabApiKeyBtn");
     this.elLoginForm = document.getElementById("loginForm");
     this.elSignupForm = document.getElementById("signupForm");
-    this.elApiKeyForm = document.getElementById("apiKeyForm");
     this.elLoginEmailInput = document.getElementById("loginEmailInput");
     this.elLoginPasswordInput = document.getElementById("loginPasswordInput");
     this.elSignupEmailInput = document.getElementById("signupEmailInput");
     this.elSignupPasswordInput = document.getElementById("signupPasswordInput");
-    this.elSupabaseUrlInput = document.getElementById("supabaseUrlInput");
-    this.elSupabaseKeyInput = document.getElementById("supabaseKeyInput");
 
     // Mobile nav
     this.elNavHome = document.getElementById("navHome");
@@ -401,7 +397,6 @@ class BudgetApp {
 
     if (this.elTabLoginBtn) this.elTabLoginBtn.addEventListener("click", () => this.switchAuthTab("login"));
     if (this.elTabSignupBtn) this.elTabSignupBtn.addEventListener("click", () => this.switchAuthTab("signup"));
-    if (this.elTabApiKeyBtn) this.elTabApiKeyBtn.addEventListener("click", () => this.switchAuthTab("apiKey"));
 
     if (this.elLoginForm) {
       this.elLoginForm.addEventListener("submit", (e) => {
@@ -414,13 +409,6 @@ class BudgetApp {
       this.elSignupForm.addEventListener("submit", (e) => {
         e.preventDefault();
         this.handleSignup();
-      });
-    }
-
-    if (this.elApiKeyForm) {
-      this.elApiKeyForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        this.handleSaveApiKey();
       });
     }
 
@@ -1055,8 +1043,6 @@ class BudgetApp {
   }
 
   openAuthModal() {
-    if (this.elSupabaseUrlInput) this.elSupabaseUrlInput.value = this.spUrl;
-    if (this.elSupabaseKeyInput) this.elSupabaseKeyInput.value = this.spKey;
     this.switchAuthTab("login");
     this.elAuthModal.classList.add("active");
   }
@@ -1066,8 +1052,8 @@ class BudgetApp {
   }
 
   switchAuthTab(tab) {
-    [this.elTabLoginBtn, this.elTabSignupBtn, this.elTabApiKeyBtn].forEach(btn => btn && btn.classList.remove("active"));
-    [this.elLoginForm, this.elSignupForm, this.elApiKeyForm].forEach(form => form && (form.style.display = "none"));
+    [this.elTabLoginBtn, this.elTabSignupBtn].forEach(btn => btn && btn.classList.remove("active"));
+    [this.elLoginForm, this.elSignupForm].forEach(form => form && (form.style.display = "none"));
 
     if (tab === "login") {
       if (this.elTabLoginBtn) this.elTabLoginBtn.classList.add("active");
@@ -1075,9 +1061,6 @@ class BudgetApp {
     } else if (tab === "signup") {
       if (this.elTabSignupBtn) this.elTabSignupBtn.classList.add("active");
       if (this.elSignupForm) this.elSignupForm.style.display = "flex";
-    } else if (tab === "apiKey") {
-      if (this.elTabApiKeyBtn) this.elTabApiKeyBtn.classList.add("active");
-      if (this.elApiKeyForm) this.elApiKeyForm.style.display = "flex";
     }
   }
 
@@ -1122,21 +1105,6 @@ class BudgetApp {
     this.updateAuthUI();
     this.showToast(this.t("toast_logout_success"));
     this.render();
-  }
-
-  handleSaveApiKey() {
-    const url = this.elSupabaseUrlInput.value.trim();
-    const key = this.elSupabaseKeyInput.value.trim();
-    if (!url || !key) return;
-
-    this.spUrl = url;
-    this.spKey = key;
-    localStorage.setItem("budget_ledger_sp_url", url);
-    localStorage.setItem("budget_ledger_sp_key", key);
-
-    this.initSupabase();
-    this.closeAuthModal();
-    this.showToast(this.t("toast_key_saved"));
   }
 
   // --- Cloud Database Data Syncing ---

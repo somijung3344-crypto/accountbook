@@ -304,9 +304,8 @@
 
       <!-- Modal Tabs Header -->
       <div class="tab-header" style="display:flex; border-bottom:1px solid var(--border); padding:0 24px; background:var(--surface-sub);">
-        <button type="button" class="tab-btn active" id="tabLoginBtn" data-i18n="tab_login">로그인</button>
-        <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup">회원가입</button>
-        <button type="button" class="tab-btn" id="tabApiKeyBtn" data-i18n="tab_api_key">🔑 API 키 설정 (보안)</button>
+        <button type="button" class="tab-btn active" id="tabLoginBtn" data-i18n="tab_login" style="flex:1;">로그인</button>
+        <button type="button" class="tab-btn" id="tabSignupBtn" data-i18n="tab_signup" style="flex:1;">회원가입</button>
       </div>
 
       <!-- Tab 1: Login Form -->
@@ -336,24 +335,6 @@
         </div>
         <div class="modal-footer" style="padding-left:0; padding-right:0; background:none; border:none;">
           <button type="submit" class="btn-primary" style="width:100%; justify-content:center;" data-i18n="btn_signup">회원가입 완료</button>
-        </div>
-      </form>
-
-      <!-- Tab 3: API Key & DB Settings -->
-      <form id="apiKeyForm" class="modal-body auth-tab-content" style="display:none;">
-        <div class="form-group">
-          <label class="form-label" for="supabaseUrlInput" data-i18n="label_supabase_url">Supabase Project URL</label>
-          <input type="url" id="supabaseUrlInput" class="form-input" value="https://timheegofhlsdecruaxb.supabase.co" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="supabaseKeyInput" data-i18n="label_supabase_key">Supabase Anon / Publishable API Key</label>
-          <textarea id="supabaseKeyInput" class="form-input" rows="3" placeholder="ey..." style="font-family:monospace; font-size:12px;" required></textarea>
-          <small style="color:var(--text-muted); font-size:11px; margin-top:4px;" data-i18n="hint_supabase_key">
-            API 키는 브라우저의 로컬 보안 환경에만 안전하게 저장되며, 소스코드에 노출되지 않고 안전하게 연동됩니다.
-          </small>
-        </div>
-        <div class="modal-footer" style="padding-left:0; padding-right:0; background:none; border:none;">
-          <button type="submit" class="btn-primary" style="width:100%; justify-content:center;" data-i18n="btn_save_key">연동 API 키 저장 및 검증</button>
         </div>
       </form>
 

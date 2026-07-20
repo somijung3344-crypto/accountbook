@@ -58,6 +58,10 @@
   padding: 0;
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   background-color: var(--bg-main);
@@ -903,3 +907,235 @@ a {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
 }
+
+/* ==========================================================================
+   Mobile Optimization Styles (< 767px)
+   ========================================================================== */
+@media (max-width: 767px) {
+  .app-container {
+    padding: 8px;
+  }
+
+  /* Compact Mobile Header */
+  .app-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .logo-title {
+    font-size: 18px;
+    white-space: nowrap;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .month-picker {
+    flex: 1;
+    justify-content: space-between;
+    padding: 5px 8px;
+    gap: 4px;
+  }
+
+  .month-picker span {
+    font-size: 13px;
+    min-width: 65px;
+  }
+
+  .month-picker button {
+    padding: 2px;
+  }
+
+  .lang-toggle-btn {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* Force 2x2 Grid for Summary Cards on Mobile */
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .card {
+    padding: 12px 10px;
+    border-radius: var(--radius-sm);
+  }
+
+  .card-header {
+    margin-bottom: 4px;
+  }
+
+  .card-title {
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .card-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  .card-amount {
+    font-size: 17px;
+    margin-bottom: 2px;
+  }
+
+  .card-subtext {
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  /* Hide Desktop Add Button on Mobile */
+  #addTxBtnDesktop {
+    display: none;
+  }
+
+  /* Transactions Section Mobile Adjustments */
+  .transactions-section {
+    padding: 14px 12px;
+  }
+
+  .tx-header {
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .tx-title {
+    font-size: 16px;
+  }
+
+  .tx-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .search-box {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  .search-box input {
+    font-size: 13px;
+    padding: 7px 10px 7px 32px;
+  }
+
+  .filter-select {
+    flex: 1;
+    font-size: 12px;
+    padding: 6px 8px;
+    min-width: 0;
+  }
+
+  /* Transaction Items Mobile Compactness */
+  .tx-item {
+    padding: 10px 10px;
+    gap: 8px;
+  }
+
+  .tx-left {
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .tx-category-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    border-radius: 8px;
+  }
+
+  .tx-details {
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .tx-name {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+  }
+
+  .tx-meta {
+    font-size: 10px;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .tx-right {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .tx-amount {
+    font-size: 14px;
+  }
+
+  .tx-actions {
+    gap: 0;
+  }
+
+  .btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Modal Mobile Bottom-Sheet Feel */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 14px 18px;
+  }
+
+  .modal-body {
+    padding: 16px 18px;
+    gap: 12px;
+  }
+
+  .modal-footer {
+    padding: 12px 18px;
+  }
+}
+

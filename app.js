@@ -1083,11 +1083,43 @@ class BudgetApp {
         this.updateAuthUI();
         await this.fetchCloudData();
       } else {
-        this.currentUser = null;
-        this.updateAuthUI();
+        // Auto connect to Supabase Cloud Server so ALL data is ALWAYS saved to server automatically!
+        await this.autoConnectCloudServer();
       }
     } catch (e) {
       console.error("Auth session check error", e);
+    }
+  }
+
+  async autoConnectCloudServer() {
+    if (!this.supabase) return;
+    const defaultServerEmail = "guest_user@accountbook.cloud";
+    const defaultServerPass = "AccountBookPass2026!_cloud";
+
+    try {
+      let res = await this.supabase.auth.signInWithPassword({
+        email: defaultServerEmail,
+        password: defaultServerPass
+      });
+
+      if (res.error) {
+        await this.supabase.auth.signUp({
+          email: defaultServerEmail,
+          password: defaultServerPass
+        });
+        res = await this.supabase.auth.signInWithPassword({
+          email: defaultServerEmail,
+          password: defaultServerPass
+        });
+      }
+
+      if (res.data && res.data.user) {
+        this.currentUser = res.data.user;
+        this.updateAuthUI();
+        await this.fetchCloudData();
+      }
+    } catch (err) {
+      console.warn("Auto cloud server connection fallback:", err);
     }
   }
 

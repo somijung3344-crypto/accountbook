@@ -362,6 +362,7 @@ class BudgetApp {
     // Auth & Supabase Modal Elements
     this.elAuthBtn = document.getElementById("authBtn");
     this.elAuthBtnLabel = document.getElementById("authBtnLabel");
+    this.elKakaoHeaderBtn = document.getElementById("kakaoHeaderBtn");
     this.elAuthModal = document.getElementById("authModal");
     this.elCloseAuthModalBtn = document.getElementById("closeAuthModalBtn");
     this.elAuthTabHeader = document.getElementById("authTabHeader");
@@ -1099,6 +1100,7 @@ class BudgetApp {
         this.elAuthBtn.classList.remove("btn-secondary");
         this.elAuthBtn.classList.add("btn-primary");
       }
+      if (this.elKakaoHeaderBtn) this.elKakaoHeaderBtn.style.display = "none";
       // Mobile bottom nav
       if (this.elNavAuthLabel) this.elNavAuthLabel.textContent = shortEmail;
       if (this.elNavAuthIcon) this.elNavAuthIcon.textContent = "account_circle";
@@ -1110,6 +1112,7 @@ class BudgetApp {
         this.elAuthBtn.classList.remove("btn-primary");
         this.elAuthBtn.classList.add("btn-secondary");
       }
+      if (this.elKakaoHeaderBtn) this.elKakaoHeaderBtn.style.display = "inline-flex";
       // Mobile bottom nav
       if (this.elNavAuthLabel) this.elNavAuthLabel.textContent = "로그인";
       if (this.elNavAuthIcon) this.elNavAuthIcon.textContent = "login";

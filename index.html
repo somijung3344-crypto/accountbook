@@ -46,7 +46,11 @@
           <span id="langLabel">English</span>
         </button>
 
-        <!-- Supabase Auth Button (Desktop only, hidden on mobile) -->
+        <!-- Supabase Auth & Kakao Buttons (Desktop only, hidden on mobile) -->
+        <button type="button" id="kakaoHeaderBtn" class="btn-kakao auth-btn-desktop kakao-login-btn" style="padding: 6px 12px; font-size: 13px; display:inline-flex; align-items:center; gap:4px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#191919"><path d="M12 3C6.477 3 2 6.477 2 10.764c0 2.76 1.83 5.176 4.606 6.541l-.963 3.528c-.085.312.268.56.54.382l4.167-2.736c.536.058 1.082.089 1.65.089 5.523 0 10-3.477 10-7.764S17.523 3 12 3z"/></svg>
+          <span>카카오 로그인</span>
+        </button>
         <button id="authBtn" class="btn-secondary auth-btn-desktop" style="padding: 6px 12px; font-size: 13px; display:inline-flex; align-items:center; gap:4px;">
           <span class="material-symbols-outlined" style="font-size:18px;">cloud_sync</span>
           <span id="authBtnLabel" data-i18n="btn_login">로그인</span>
